@@ -16,6 +16,7 @@ import Patients from "./pages/Patients";
 import Library from "./pages/Library";
 import Legal from "./pages/Legal";
 import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const AppRoutes = () => {
                     <Route path="/library" element={<Library />} />
                     <Route path="/legal" element={<Legal />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/settings" element={<Settings />} />
                   </Routes>
                 </main>
               </div>
