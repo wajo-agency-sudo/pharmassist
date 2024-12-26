@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { WhatsappIcon } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -44,7 +44,7 @@ export function ConnectionPanel() {
       <div className="flex items-center justify-between p-4 border rounded-lg">
         <div className="flex items-center gap-4">
           <div className="h-10 w-10 bg-green-100 rounded-full flex items-center justify-center">
-            <WhatsappIcon className="h-6 w-6 text-green-600" />
+            <MessageSquare className="h-6 w-6 text-green-600" />
           </div>
           <div>
             <h3 className="font-medium">WhatsApp Business</h3>
