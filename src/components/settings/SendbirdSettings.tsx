@@ -66,7 +66,9 @@ export function SendbirdSettings() {
     });
   };
 
-  const apiBaseUrl = "https://api-AA1E2F11-9DD3-4575-914B-2F66A17686A9.sendbird.com";
+  const apiBaseUrl = applicationId 
+    ? `https://api-${applicationId}.sendbird.com`
+    : "https://api-<APP_ID>.sendbird.com";
 
   return (
     <Card>
