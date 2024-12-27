@@ -26,15 +26,13 @@ export function AIBotSettings() {
     }
 
     const generatedCode = `<!-- PharmaAssist Bot Integration -->
-<!-- Add this code to your website's <head> section -->
-<link rel="stylesheet" href="${botUrl}/bot-styles.css">
-
-<!-- Add this code before the closing </body> tag -->
-<div id="pharma-assist-bot"></div>
 <script>
-  window.pharmaAssistConfig = {
+!function(w, d, s, ...args) {
+  var div = d.createElement('div');
+  div.id = 'pharma-assist-bot';
+  d.body.appendChild(div);
+  w.pharmaAssistConfig = {
     botUrl: "${botUrl}",
-    containerId: "pharma-assist-bot",
     theme: {
       primaryColor: "#0284c7",
       fontFamily: "system-ui, -apple-system, sans-serif"
@@ -50,8 +48,14 @@ export function AIBotSettings() {
       drugInteractions: true
     }
   };
-</script>
-<script async src="${botUrl}/widget.js"></script>`;
+  var f = d.getElementsByTagName(s)[0],
+  j = d.createElement(s);
+  j.defer = true;
+  j.type = 'module';
+  j.src = '${botUrl}/widget.js';
+  f.parentNode.insertBefore(j, f);
+}(window, document, 'script');
+</script>`;
 
     navigator.clipboard.writeText(generatedCode);
     toast({
