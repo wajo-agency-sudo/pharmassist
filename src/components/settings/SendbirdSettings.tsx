@@ -38,11 +38,39 @@ export function SendbirdSettings() {
     }
   }, []);
 
-  const handleConnect = () => {
+  const validateCredentials = async () => {
+    try {
+      const response = await fetch(`https://api-${applicationId}.sendbird.com/v3/users`, {
+        method: 'GET',
+        headers: {
+          'Api-Token': apiToken,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      return response.status === 200;
+    } catch (error) {
+      console.error('Error validating Sendbird credentials:', error);
+      return false;
+    }
+  };
+
+  const handleConnect = async () => {
     if (!applicationId || !apiToken) {
       toast({
         title: "Missing Information",
         description: "Please enter both your Sendbird Application ID and API Token",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const isValid = await validateCredentials();
+    
+    if (!isValid) {
+      toast({
+        title: "Invalid Credentials",
+        description: "The provided Application ID or API Token is invalid.",
         variant: "destructive",
       });
       return;
