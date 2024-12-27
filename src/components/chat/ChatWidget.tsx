@@ -19,7 +19,6 @@ export function ChatWidget() {
     return saved ? JSON.parse(saved) : [];
   });
   const [inputValue, setInputValue] = useState("");
-  const [apiKey, setApiKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -41,15 +40,11 @@ export function ChatWidget() {
   }, [isOpen]);
 
   const generateAIResponse = async (userMessage: string): Promise<string> => {
-    if (!apiKey) {
-      return "Please enter your Perplexity API key to enable AI responses.";
-    }
-
     try {
       const response = await fetch('https://api.perplexity.ai/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${apiKey}`,
+          'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -131,14 +126,6 @@ export function ChatWidget() {
       {isOpen && (
         <div className="absolute bottom-16 right-0 w-80 bg-white rounded-lg shadow-lg border">
           <div className="p-4">
-            <Input
-              type="password"
-              placeholder="Enter Perplexity API Key"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              className="mb-4"
-            />
-            
             <ScrollArea className="h-[300px] pr-4">
               <div className="space-y-4">
                 {messages.map((message) => (
