@@ -13,7 +13,7 @@ export function SendbirdInstructions({ apiBaseUrl }: { apiBaseUrl: string }) {
         <p>1. Create a Sendbird account if you haven't already</p>
         <p>2. Get your Application ID from the Sendbird Dashboard</p>
         <p>3. Generate an API token from your Sendbird Dashboard</p>
-        <p>4. Select your region from the Sendbird Dashboard</p>
+        <p>4. Select your region from the Sendbird Dashboard (EU server is located in Frankfurt)</p>
         <p>5. (Optional) Configure a webhook URL to receive events</p>
         <p>6. Enter the credentials below to connect</p>
         <p className="text-sm text-muted-foreground mt-2">API Base URL: {apiBaseUrl}</p>

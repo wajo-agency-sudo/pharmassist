@@ -5,7 +5,7 @@ export const getApiUrl = (applicationId: string, region?: SendbirdRegion) => {
   
   switch (region) {
     case 'EU':
-      return `https://api-EU-${applicationId}.sendbird.com`;
+      return `https://api-EU-${applicationId}.sendbird.com`;  // Frankfurt server
     case 'APAC':
       return `https://api-APAC-${applicationId}.sendbird.com`;
     default:
