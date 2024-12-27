@@ -26,6 +26,15 @@ export function AIBotSettings() {
   const { toast } = useToast();
 
   const handleGenerateCode = () => {
+    if (!isValidDomain(botUrl)) {
+      toast({
+        title: "Invalid Domain",
+        description: "Please enter a valid domain URL (e.g., https://example.com)",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const generatedCode = `<!-- PharmaAssist Bot Widget -->
 <script>
   window.pharmaAssistConfig = {
@@ -53,6 +62,20 @@ export function AIBotSettings() {
     setVerificationStatus(value as VerificationStatus);
   };
 
+  const isValidDomain = (url: string) => {
+    try {
+      const urlObject = new URL(url);
+      return urlObject.protocol === 'http:' || urlObject.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  };
+
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setBotUrl(value);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -68,12 +91,12 @@ export function AIBotSettings() {
         <div className="space-y-2">
           <label className="text-sm font-medium flex items-center gap-2">
             <Link className="h-4 w-4" />
-            Bot URL
+            Domain URL
           </label>
           <Input
-            placeholder="Enter your bot URL"
+            placeholder="Enter your domain URL (e.g., https://example.com)"
             value={botUrl}
-            onChange={(e) => setBotUrl(e.target.value)}
+            onChange={handleUrlChange}
           />
         </div>
 
