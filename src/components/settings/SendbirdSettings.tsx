@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MessageSquare, Link } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -18,7 +19,16 @@ import {
 
 export function SendbirdSettings() {
   const [applicationId, setApplicationId] = useState("");
+  const [isConnected, setIsConnected] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const savedAppId = localStorage.getItem('SENDBIRD_APP_ID');
+    if (savedAppId) {
+      setApplicationId(savedAppId);
+      setIsConnected(true);
+    }
+  }, []);
 
   const handleConnect = () => {
     if (!applicationId) {
@@ -32,6 +42,7 @@ export function SendbirdSettings() {
 
     // Store the application ID in localStorage for demo purposes
     localStorage.setItem('SENDBIRD_APP_ID', applicationId);
+    setIsConnected(true);
     
     toast({
       title: "Sendbird Connected",
@@ -39,15 +50,31 @@ export function SendbirdSettings() {
     });
   };
 
+  const handleDisconnect = () => {
+    localStorage.removeItem('SENDBIRD_APP_ID');
+    setIsConnected(false);
+    setApplicationId("");
+    
+    toast({
+      title: "Sendbird Disconnected",
+      description: "Your Sendbird account has been disconnected.",
+    });
+  };
+
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center gap-2">
-          <MessageSquare className="h-6 w-6 text-primary" />
-          <div>
-            <CardTitle>Sendbird Integration</CardTitle>
-            <CardDescription>Configure your Sendbird chat integration settings</CardDescription>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <MessageSquare className="h-6 w-6 text-primary" />
+            <div>
+              <CardTitle>Sendbird Integration</CardTitle>
+              <CardDescription>Configure your Sendbird chat integration settings</CardDescription>
+            </div>
           </div>
+          <Badge variant={isConnected ? "default" : "secondary"}>
+            {isConnected ? "Connected" : "Not Connected"}
+          </Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -75,12 +102,19 @@ export function SendbirdSettings() {
             placeholder="Enter your Sendbird Application ID"
             value={applicationId}
             onChange={(e) => setApplicationId(e.target.value)}
+            disabled={isConnected}
           />
         </div>
 
-        <Button onClick={handleConnect} className="w-full">
-          Connect Sendbird
-        </Button>
+        {isConnected ? (
+          <Button onClick={handleDisconnect} variant="destructive" className="w-full">
+            Disconnect Sendbird
+          </Button>
+        ) : (
+          <Button onClick={handleConnect} className="w-full">
+            Connect Sendbird
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
