@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ConnectionPanel } from "@/components/settings/ConnectionPanel";
 import { AIBotSettings } from "@/components/settings/AIBotSettings";
+import { SendbirdSettings } from "@/components/settings/SendbirdSettings";
 
 const Settings = () => {
   return (
@@ -19,6 +20,7 @@ const Settings = () => {
         </CardContent>
       </Card>
 
+      <SendbirdSettings />
       <AIBotSettings />
     </div>
   );
