@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ConnectionPanel } from "@/components/settings/ConnectionPanel";
+import { AIBotSettings } from "@/components/settings/AIBotSettings";
 
 const Settings = () => {
   return (
@@ -17,6 +18,8 @@ const Settings = () => {
           <ConnectionPanel />
         </CardContent>
       </Card>
+
+      <AIBotSettings />
     </div>
   );
 };
