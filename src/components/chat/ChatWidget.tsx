@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MessageCircle, X, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,39 @@ export function ChatWidget() {
   const [inputValue, setInputValue] = useState("");
   const { toast } = useToast();
 
+  useEffect(() => {
+    // Add initial greeting message when chat is opened
+    if (isOpen && messages.length === 0) {
+      const greeting: Message = {
+        id: Date.now().toString(),
+        content: "Hi, how are you doing and how can I help?",
+        sender: "agent",
+        timestamp: new Date(),
+      };
+      setMessages([greeting]);
+    }
+  }, [isOpen]);
+
+  const generateResponse = (userMessage: string): string => {
+    const lowerMessage = userMessage.toLowerCase();
+    
+    // Basic response logic
+    if (lowerMessage.includes("hello") || lowerMessage.includes("hi")) {
+      return "Hello! How can I assist you today?";
+    }
+    if (lowerMessage.includes("how are you")) {
+      return "I'm doing well, thank you for asking! How may I help you?";
+    }
+    if (lowerMessage.includes("bye") || lowerMessage.includes("goodbye")) {
+      return "Goodbye! Have a great day!";
+    }
+    if (lowerMessage.includes("thank")) {
+      return "You're welcome! Is there anything else I can help you with?";
+    }
+    // Default response
+    return "I understand. How else can I assist you today?";
+  };
+
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;
 
@@ -31,11 +64,12 @@ export function ChatWidget() {
     setMessages((prev) => [...prev, newMessage]);
     setInputValue("");
 
-    // Simulate automated response
+    // Generate and send automated response
     setTimeout(() => {
+      const responseContent = generateResponse(inputValue);
       const autoResponse: Message = {
-        id: Date.now().toString(),
-        content: "Thanks for your message! Our team will get back to you soon.",
+        id: (Date.now() + 1).toString(),
+        content: responseContent,
         sender: "agent",
         timestamp: new Date(),
       };
