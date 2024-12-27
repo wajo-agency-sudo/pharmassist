@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MessageSquare, Link } from "lucide-react";
+import { MessageSquare, Link, Key } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -19,29 +19,33 @@ import {
 
 export function SendbirdSettings() {
   const [applicationId, setApplicationId] = useState("");
+  const [apiToken, setApiToken] = useState("");
   const [isConnected, setIsConnected] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     const savedAppId = localStorage.getItem('SENDBIRD_APP_ID');
-    if (savedAppId) {
+    const savedToken = localStorage.getItem('SENDBIRD_API_TOKEN');
+    if (savedAppId && savedToken) {
       setApplicationId(savedAppId);
+      setApiToken(savedToken);
       setIsConnected(true);
     }
   }, []);
 
   const handleConnect = () => {
-    if (!applicationId) {
+    if (!applicationId || !apiToken) {
       toast({
         title: "Missing Information",
-        description: "Please enter your Sendbird Application ID",
+        description: "Please enter both your Sendbird Application ID and API Token",
         variant: "destructive",
       });
       return;
     }
 
-    // Store the application ID in localStorage for demo purposes
+    // Store the credentials in localStorage for demo purposes
     localStorage.setItem('SENDBIRD_APP_ID', applicationId);
+    localStorage.setItem('SENDBIRD_API_TOKEN', apiToken);
     setIsConnected(true);
     
     toast({
@@ -52,8 +56,10 @@ export function SendbirdSettings() {
 
   const handleDisconnect = () => {
     localStorage.removeItem('SENDBIRD_APP_ID');
+    localStorage.removeItem('SENDBIRD_API_TOKEN');
     setIsConnected(false);
     setApplicationId("");
+    setApiToken("");
     
     toast({
       title: "Sendbird Disconnected",
@@ -83,7 +89,8 @@ export function SendbirdSettings() {
           <AlertDescription className="mt-2 space-y-2">
             <p>1. Create a Sendbird account if you haven't already</p>
             <p>2. Get your Application ID from the Sendbird Dashboard</p>
-            <p>3. Enter your Application ID below to connect</p>
+            <p>3. Generate an API token from your Sendbird Dashboard</p>
+            <p>4. Enter both credentials below to connect</p>
             <a 
               href="https://dashboard.sendbird.com" 
               target="_blank" 
@@ -96,14 +103,30 @@ export function SendbirdSettings() {
           </AlertDescription>
         </Alert>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Application ID</label>
-          <Input
-            placeholder="Enter your Sendbird Application ID"
-            value={applicationId}
-            onChange={(e) => setApplicationId(e.target.value)}
-            disabled={isConnected}
-          />
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Application ID</label>
+            <Input
+              placeholder="Enter your Sendbird Application ID"
+              value={applicationId}
+              onChange={(e) => setApplicationId(e.target.value)}
+              disabled={isConnected}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium">API Token</label>
+            <div className="relative">
+              <Input
+                type="password"
+                placeholder="Enter your Sendbird API Token"
+                value={apiToken}
+                onChange={(e) => setApiToken(e.target.value)}
+                disabled={isConnected}
+              />
+              <Key className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            </div>
+          </div>
         </div>
 
         {isConnected ? (
