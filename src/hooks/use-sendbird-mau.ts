@@ -21,14 +21,15 @@ const fetchMAU = async () => {
   const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
   const response = await fetch(
-    `${apiUrl}/v3/statistics/monthly_active_users?start=${firstDayOfMonth.toISOString()}&end=${lastDayOfMonth.toISOString()}`,
+    `${apiUrl}/statistics/monthly_active_users?start=${firstDayOfMonth.toISOString()}&end=${lastDayOfMonth.toISOString()}`,
     {
       headers: getHeaders(apiToken),
     }
   );
 
   if (!response.ok) {
-    throw new Error('Failed to fetch MAU data');
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch MAU data');
   }
 
   const data = await response.json();
