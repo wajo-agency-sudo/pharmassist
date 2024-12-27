@@ -10,6 +10,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert";
 
 export function AIBotSettings() {
   const [botUrl, setBotUrl] = useState("");
@@ -90,6 +95,15 @@ export function AIBotSettings() {
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
+        <Alert>
+          <AlertTitle>Integration Instructions</AlertTitle>
+          <AlertDescription className="mt-2 space-y-2">
+            <p>1. Enter your domain URL where the PharmaAssist platform is deployed</p>
+            <p>2. Click "Generate Website Code" to copy the integration code</p>
+            <p>3. Paste the code just before the closing <code className="bg-muted px-1 py-0.5 rounded">&lt;/body&gt;</code> tag in your website's HTML</p>
+          </AlertDescription>
+        </Alert>
+
         <div className="space-y-2">
           <label className="text-sm font-medium flex items-center gap-2">
             <Link className="h-4 w-4" />
