@@ -11,37 +11,13 @@ import {
 } from "@/components/ui/card";
 import { SendbirdForm, SendbirdFormData } from "./SendbirdForm";
 import { SendbirdInstructions } from "./SendbirdInstructions";
-import { getApiUrl } from "@/utils/sendbird";
+import { getApiUrl, validateApiToken } from "@/utils/sendbird";
 
 export function SendbirdSettings() {
   const [isConnected, setIsConnected] = useState(false);
   const { toast } = useToast();
   const [currentAppId, setCurrentAppId] = useState(localStorage.getItem('SENDBIRD_APP_ID') || '');
   const [currentRegion, setCurrentRegion] = useState(localStorage.getItem('SENDBIRD_REGION') || 'US');
-
-  const validateCredentials = async (data: SendbirdFormData) => {
-    try {
-      const apiUrl = getApiUrl(data.applicationId, data.region);
-      const response = await fetch(`${apiUrl}/v3/statistics/daily`, {
-        method: 'GET',
-        headers: {
-          'Api-Token': data.apiToken,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        console.error('Sendbird API validation failed:', await response.text());
-        return false;
-      }
-
-      const responseData = await response.json();
-      return responseData && response.status === 200;
-    } catch (error) {
-      console.error('Error validating Sendbird credentials:', error);
-      return false;
-    }
-  };
 
   const handleConnect = async (data: SendbirdFormData) => {
     if (!data.applicationId || !data.apiToken) {
@@ -53,7 +29,7 @@ export function SendbirdSettings() {
       return;
     }
 
-    const isValid = await validateCredentials(data);
+    const isValid = await validateApiToken(data.applicationId, data.apiToken, data.region);
     
     if (!isValid) {
       toast({
