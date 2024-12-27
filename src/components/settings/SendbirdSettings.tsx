@@ -16,11 +16,20 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { SendbirdRegion, getApiUrl } from "@/utils/sendbird";
 
 export function SendbirdSettings() {
   const [applicationId, setApplicationId] = useState("");
   const [apiToken, setApiToken] = useState("");
   const [webhookUrl, setWebhookUrl] = useState("");
+  const [region, setRegion] = useState<SendbirdRegion>("US");
   const [isConnected, setIsConnected] = useState(false);
   const { toast } = useToast();
 
@@ -28,11 +37,16 @@ export function SendbirdSettings() {
     const savedAppId = localStorage.getItem('SENDBIRD_APP_ID');
     const savedToken = localStorage.getItem('SENDBIRD_API_TOKEN');
     const savedWebhookUrl = localStorage.getItem('SENDBIRD_WEBHOOK_URL');
+    const savedRegion = localStorage.getItem('SENDBIRD_REGION') as SendbirdRegion;
+    
     if (savedAppId && savedToken) {
       setApplicationId(savedAppId);
       setApiToken(savedToken);
       if (savedWebhookUrl) {
         setWebhookUrl(savedWebhookUrl);
+      }
+      if (savedRegion) {
+        setRegion(savedRegion);
       }
       setIsConnected(true);
     }
@@ -40,8 +54,8 @@ export function SendbirdSettings() {
 
   const validateCredentials = async () => {
     try {
-      // Using the daily statistics endpoint as recommended
-      const response = await fetch(`https://api-${applicationId}.sendbird.com/v3/statistics/daily`, {
+      const apiUrl = getApiUrl(applicationId, region);
+      const response = await fetch(`${apiUrl}/v3/statistics/daily`, {
         method: 'GET',
         headers: {
           'Api-Token': apiToken,
@@ -85,6 +99,7 @@ export function SendbirdSettings() {
 
     localStorage.setItem('SENDBIRD_APP_ID', applicationId);
     localStorage.setItem('SENDBIRD_API_TOKEN', apiToken);
+    localStorage.setItem('SENDBIRD_REGION', region);
     if (webhookUrl) {
       localStorage.setItem('SENDBIRD_WEBHOOK_URL', webhookUrl);
     }
@@ -100,10 +115,12 @@ export function SendbirdSettings() {
     localStorage.removeItem('SENDBIRD_APP_ID');
     localStorage.removeItem('SENDBIRD_API_TOKEN');
     localStorage.removeItem('SENDBIRD_WEBHOOK_URL');
+    localStorage.removeItem('SENDBIRD_REGION');
     setIsConnected(false);
     setApplicationId("");
     setApiToken("");
     setWebhookUrl("");
+    setRegion("US");
     
     toast({
       title: "Sendbird Disconnected",
@@ -111,9 +128,7 @@ export function SendbirdSettings() {
     });
   };
 
-  const apiBaseUrl = applicationId 
-    ? `https://api-${applicationId}.sendbird.com`
-    : "https://api-<APP_ID>.sendbird.com";
+  const apiBaseUrl = getApiUrl(applicationId, region);
 
   return (
     <Card>
@@ -138,8 +153,9 @@ export function SendbirdSettings() {
             <p>1. Create a Sendbird account if you haven't already</p>
             <p>2. Get your Application ID from the Sendbird Dashboard</p>
             <p>3. Generate an API token from your Sendbird Dashboard</p>
-            <p>4. (Optional) Configure a webhook URL to receive events</p>
-            <p>5. Enter the credentials below to connect</p>
+            <p>4. Select your region from the Sendbird Dashboard</p>
+            <p>5. (Optional) Configure a webhook URL to receive events</p>
+            <p>6. Enter the credentials below to connect</p>
             <p className="text-sm text-muted-foreground mt-2">API Base URL: {apiBaseUrl}</p>
             <a 
               href="https://dashboard.sendbird.com" 
@@ -154,6 +170,24 @@ export function SendbirdSettings() {
         </Alert>
 
         <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Region</label>
+            <Select
+              value={region}
+              onValueChange={(value: SendbirdRegion) => setRegion(value)}
+              disabled={isConnected}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select region" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="US">US (Default)</SelectItem>
+                <SelectItem value="EU">EU</SelectItem>
+                <SelectItem value="APAC">APAC</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="space-y-2">
             <label className="text-sm font-medium">Application ID</label>
             <Input

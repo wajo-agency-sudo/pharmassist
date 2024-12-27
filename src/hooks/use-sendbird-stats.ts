@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getApiUrl } from '@/utils/sendbird';
 
 interface SendbirdStats {
   messageCount: number;
@@ -17,13 +18,15 @@ export const useSendbirdStats = () => {
     const fetchStats = async () => {
       const applicationId = localStorage.getItem('SENDBIRD_APP_ID');
       const apiToken = localStorage.getItem('SENDBIRD_API_TOKEN');
+      const region = localStorage.getItem('SENDBIRD_REGION');
 
       if (!applicationId || !apiToken) {
         return;
       }
 
       try {
-        const response = await fetch(`https://api-${applicationId}.sendbird.com/v3/statistics/daily`, {
+        const apiUrl = getApiUrl(applicationId, region as any);
+        const response = await fetch(`${apiUrl}/v3/statistics/daily`, {
           method: 'GET',
           headers: {
             'Api-Token': apiToken,
