@@ -18,9 +18,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+type VerificationStatus = "yes" | "no";
+
 export function AIBotSettings() {
   const [botUrl, setBotUrl] = useState("");
-  const [verificationStatus, setVerificationStatus] = useState<"yes" | "no">("no");
+  const [verificationStatus, setVerificationStatus] = useState<VerificationStatus>("no");
   const { toast } = useToast();
 
   const handleGenerateCode = () => {
@@ -45,6 +47,10 @@ export function AIBotSettings() {
       title: "Verification Status",
       description: `Bot verification status: ${verificationStatus === "yes" ? "Verified" : "Not Verified"}`,
     });
+  };
+
+  const handleVerificationChange = (value: string) => {
+    setVerificationStatus(value as VerificationStatus);
   };
 
   return (
@@ -76,7 +82,7 @@ export function AIBotSettings() {
             <TestTube className="h-4 w-4" />
             Verification Status
           </label>
-          <Select value={verificationStatus} onValueChange={setVerificationStatus}>
+          <Select value={verificationStatus} onValueChange={handleVerificationChange}>
             <SelectTrigger>
               <SelectValue placeholder="Select verification status" />
             </SelectTrigger>
