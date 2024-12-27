@@ -1,10 +1,22 @@
-import { getHeaders } from './sendbird';
+export const verifyWebhookSignature = async (payload: string, signature: string, apiToken: string): Promise<boolean> => {
+  const encoder = new TextEncoder();
+  const key = await window.crypto.subtle.importKey(
+    'raw',
+    encoder.encode(apiToken),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  
+  const signatureBuffer = await window.crypto.subtle.sign(
+    'HMAC',
+    key,
+    encoder.encode(payload)
+  );
 
-export const verifyWebhookSignature = (payload: string, signature: string, apiToken: string): boolean => {
-  const crypto = require('crypto');
-  const hmac = crypto.createHmac('sha256', apiToken);
-  hmac.update(payload);
-  const calculatedSignature = hmac.digest('hex');
+  const signatureArray = Array.from(new Uint8Array(signatureBuffer));
+  const calculatedSignature = signatureArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+  
   return calculatedSignature === signature;
 };
 
@@ -16,24 +28,20 @@ export const handleWebhookEvent = async (
   }
 ) => {
   const apiToken = localStorage.getItem('SENDBIRD_API_TOKEN');
-  if (!apiToken || !url) return;
+  if (!apiToken || !url) return false;
 
   try {
+    const eventString = JSON.stringify(event);
+    const signature = await generateWebhookSignature(eventString, apiToken);
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Sendbird-Signature': crypto
-          .createHmac('sha256', apiToken)
-          .update(JSON.stringify(event))
-          .digest('hex'),
+        'X-Sendbird-Signature': signature,
       },
-      body: JSON.stringify(event),
+      body: eventString,
     });
-
-    if (!response.ok) {
-      throw new Error(`Webhook delivery failed: ${response.statusText}`);
-    }
 
     return response.ok;
   } catch (error) {
@@ -41,6 +49,26 @@ export const handleWebhookEvent = async (
     return false;
   }
 };
+
+async function generateWebhookSignature(payload: string, apiToken: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const key = await window.crypto.subtle.importKey(
+    'raw',
+    encoder.encode(apiToken),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  
+  const signatureBuffer = await window.crypto.subtle.sign(
+    'HMAC',
+    key,
+    encoder.encode(payload)
+  );
+
+  const signatureArray = Array.from(new Uint8Array(signatureBuffer));
+  return signatureArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+}
 
 export interface WebhookEvent {
   category: string;

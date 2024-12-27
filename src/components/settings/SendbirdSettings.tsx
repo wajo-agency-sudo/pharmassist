@@ -59,7 +59,7 @@ export function SendbirdSettings() {
         toast({
           title: "Webhook Warning",
           description: "Could not verify webhook URL. Please check the URL and try again.",
-          variant: "warning",
+          variant: "destructive", // Changed from "warning" to "destructive"
         });
         // Continue with connection despite webhook warning
       }
