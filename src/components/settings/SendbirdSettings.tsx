@@ -43,7 +43,6 @@ export function SendbirdSettings() {
       return;
     }
 
-    // Store the credentials in localStorage for demo purposes
     localStorage.setItem('SENDBIRD_APP_ID', applicationId);
     localStorage.setItem('SENDBIRD_API_TOKEN', apiToken);
     setIsConnected(true);
@@ -66,6 +65,10 @@ export function SendbirdSettings() {
       description: "Your Sendbird account has been disconnected.",
     });
   };
+
+  const apiBaseUrl = applicationId 
+    ? `https://api-${applicationId}.sendbird.com` 
+    : 'https://api-<APP_ID>.sendbird.com';
 
   return (
     <Card>
@@ -91,7 +94,7 @@ export function SendbirdSettings() {
             <p>2. Get your Application ID from the Sendbird Dashboard</p>
             <p>3. Generate an API token from your Sendbird Dashboard</p>
             <p>4. Enter both credentials below to connect</p>
-            <p className="text-sm text-muted-foreground mt-2">API Base URL: https://api-{applicationId || '<APP_ID>'}.sendbird.com</p>
+            <p className="text-sm text-muted-foreground mt-2">API Base URL: {apiBaseUrl}</p>
             <a 
               href="https://dashboard.sendbird.com" 
               target="_blank" 
