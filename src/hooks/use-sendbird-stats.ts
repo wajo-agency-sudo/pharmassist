@@ -12,16 +12,22 @@ export const useSendbirdStats = () => {
         return;
       }
 
-      fetch(`https://api-${applicationId}.sendbird.com/v3/messages`, {
+      fetch(`https://api-${applicationId}.sendbird.com/v3/statistics/daily`, {
+        method: 'GET',
         headers: {
           'Api-Token': apiToken,
           'Content-Type': 'application/json',
         },
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then((data) => {
-          if (data.total_count) {
-            setMessageCount(data.total_count);
+          if (data.statistics && data.statistics[0]) {
+            setMessageCount(data.statistics[0].message_count || 0);
           }
         })
         .catch((error) => {
