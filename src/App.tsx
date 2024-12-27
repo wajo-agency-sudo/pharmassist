@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { SendbirdProvider } from "@/contexts/SendbirdContext";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Conversations from "./pages/Conversations";
@@ -68,9 +69,11 @@ const App = () => (
     <TooltipProvider>
       <BrowserRouter>
         <AuthProvider>
-          <Toaster />
-          <Sonner />
-          <AppRoutes />
+          <SendbirdProvider>
+            <Toaster />
+            <Sonner />
+            <AppRoutes />
+          </SendbirdProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

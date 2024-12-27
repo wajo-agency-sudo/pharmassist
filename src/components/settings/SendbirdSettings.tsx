@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MessageSquare } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { useSendbird } from "@/contexts/SendbirdContext";
 import {
   Card,
   CardContent,
@@ -14,7 +15,8 @@ import { SendbirdInstructions } from "./SendbirdInstructions";
 import { getApiUrl, validateApiToken } from "@/utils/sendbird";
 
 export function SendbirdSettings() {
-  const [isConnected, setIsConnected] = useState(false);
+  const { isConnected: contextIsConnected } = useSendbird();
+  const [isConnected, setIsConnected] = useState(contextIsConnected);
   const { toast } = useToast();
   const [currentAppId, setCurrentAppId] = useState(localStorage.getItem('SENDBIRD_APP_ID') || '');
   const [currentRegion, setCurrentRegion] = useState(localStorage.getItem('SENDBIRD_REGION') || 'US');
@@ -54,6 +56,9 @@ export function SendbirdSettings() {
       title: "Sendbird Connected",
       description: "Your Sendbird account has been successfully connected.",
     });
+
+    // Force a page reload to update the context
+    window.location.reload();
   };
 
   const handleDisconnect = () => {
@@ -69,6 +74,9 @@ export function SendbirdSettings() {
       title: "Sendbird Disconnected",
       description: "Your Sendbird account has been disconnected.",
     });
+
+    // Force a page reload to update the context
+    window.location.reload();
   };
 
   const apiBaseUrl = getApiUrl(currentAppId, currentRegion as any);
