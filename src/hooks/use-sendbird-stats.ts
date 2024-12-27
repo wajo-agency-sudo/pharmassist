@@ -12,7 +12,10 @@ export const useSendbirdStats = () => {
         return;
       }
 
-      fetch(`https://api-${applicationId}.sendbird.com/v3/statistics/daily`, {
+      // Remove any dashes from the Application ID
+      const sanitizedAppId = applicationId.replace(/-/g, '');
+
+      fetch(`https://api-${sanitizedAppId}.sendbird.com/v3/statistics/daily`, {
         method: 'GET',
         headers: {
           'Api-Token': apiToken,
