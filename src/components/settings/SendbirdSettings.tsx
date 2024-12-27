@@ -13,6 +13,7 @@ import {
 import { SendbirdForm, SendbirdFormData } from "./SendbirdForm";
 import { SendbirdInstructions } from "./SendbirdInstructions";
 import { getApiUrl, validateApiToken } from "@/utils/sendbird";
+import { handleWebhookEvent } from "@/utils/sendbird-webhook";
 
 export function SendbirdSettings() {
   const { isConnected: contextIsConnected } = useSendbird();
@@ -40,6 +41,28 @@ export function SendbirdSettings() {
         variant: "destructive",
       });
       return;
+    }
+
+    // Test webhook URL if provided
+    if (data.webhookUrl) {
+      const testEvent = {
+        category: "webhook_test",
+        payload: {
+          message: "Testing webhook connection",
+          timestamp: new Date().toISOString(),
+        },
+      };
+
+      const webhookSuccess = await handleWebhookEvent(data.webhookUrl, testEvent);
+      
+      if (!webhookSuccess) {
+        toast({
+          title: "Webhook Warning",
+          description: "Could not verify webhook URL. Please check the URL and try again.",
+          variant: "warning",
+        });
+        // Continue with connection despite webhook warning
+      }
     }
 
     localStorage.setItem('SENDBIRD_APP_ID', data.applicationId);
