@@ -25,13 +25,33 @@ export function AIBotSettings() {
       return;
     }
 
-    const generatedCode = `<!-- PharmaAssist Bot Widget -->
+    const generatedCode = `<!-- PharmaAssist Bot Integration -->
+<!-- Add this code to your website's <head> section -->
+<link rel="stylesheet" href="${botUrl}/bot-styles.css">
+
+<!-- Add this code before the closing </body> tag -->
+<div id="pharma-assist-bot"></div>
 <script>
   window.pharmaAssistConfig = {
-    botUrl: "${botUrl}"
+    botUrl: "${botUrl}",
+    containerId: "pharma-assist-bot",
+    theme: {
+      primaryColor: "#0284c7",
+      fontFamily: "system-ui, -apple-system, sans-serif"
+    },
+    position: {
+      bottom: "20px",
+      right: "20px"
+    },
+    initialMessage: "👋 Hello! How can I assist you with your pharmacy needs today?",
+    features: {
+      prescriptionLookup: true,
+      medicationReminders: true,
+      drugInteractions: true
+    }
   };
 </script>
-<script src="${botUrl}/widget.js"></script>`;
+<script async src="${botUrl}/widget.js"></script>`;
 
     navigator.clipboard.writeText(generatedCode);
     toast({
