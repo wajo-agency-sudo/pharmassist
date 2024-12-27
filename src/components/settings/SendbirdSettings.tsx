@@ -72,7 +72,7 @@ export function SendbirdSettings() {
               <CardDescription>Configure your Sendbird chat integration settings</CardDescription>
             </div>
           </div>
-          <Badge variant={isConnected ? "default" : "secondary"}>
+          <Badge variant={isConnected ? "success" : "destructive"}>
             {isConnected ? "Connected" : "Not Connected"}
           </Badge>
         </div>
