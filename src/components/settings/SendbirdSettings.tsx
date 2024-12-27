@@ -20,15 +20,20 @@ import {
 export function SendbirdSettings() {
   const [applicationId, setApplicationId] = useState("");
   const [apiToken, setApiToken] = useState("");
+  const [webhookUrl, setWebhookUrl] = useState("");
   const [isConnected, setIsConnected] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     const savedAppId = localStorage.getItem('SENDBIRD_APP_ID');
     const savedToken = localStorage.getItem('SENDBIRD_API_TOKEN');
+    const savedWebhookUrl = localStorage.getItem('SENDBIRD_WEBHOOK_URL');
     if (savedAppId && savedToken) {
       setApplicationId(savedAppId);
       setApiToken(savedToken);
+      if (savedWebhookUrl) {
+        setWebhookUrl(savedWebhookUrl);
+      }
       setIsConnected(true);
     }
   }, []);
@@ -45,6 +50,9 @@ export function SendbirdSettings() {
 
     localStorage.setItem('SENDBIRD_APP_ID', applicationId);
     localStorage.setItem('SENDBIRD_API_TOKEN', apiToken);
+    if (webhookUrl) {
+      localStorage.setItem('SENDBIRD_WEBHOOK_URL', webhookUrl);
+    }
     setIsConnected(true);
     
     toast({
@@ -56,9 +64,11 @@ export function SendbirdSettings() {
   const handleDisconnect = () => {
     localStorage.removeItem('SENDBIRD_APP_ID');
     localStorage.removeItem('SENDBIRD_API_TOKEN');
+    localStorage.removeItem('SENDBIRD_WEBHOOK_URL');
     setIsConnected(false);
     setApplicationId("");
     setApiToken("");
+    setWebhookUrl("");
     
     toast({
       title: "Sendbird Disconnected",
@@ -93,7 +103,8 @@ export function SendbirdSettings() {
             <p>1. Create a Sendbird account if you haven't already</p>
             <p>2. Get your Application ID from the Sendbird Dashboard</p>
             <p>3. Generate an API token from your Sendbird Dashboard</p>
-            <p>4. Enter both credentials below to connect</p>
+            <p>4. (Optional) Configure a webhook URL to receive events</p>
+            <p>5. Enter the credentials below to connect</p>
             <p className="text-sm text-muted-foreground mt-2">API Base URL: {apiBaseUrl}</p>
             <a 
               href="https://dashboard.sendbird.com" 
@@ -130,6 +141,16 @@ export function SendbirdSettings() {
               />
               <Key className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Webhook URL (Optional)</label>
+            <Input
+              placeholder="Enter your webhook URL"
+              value={webhookUrl}
+              onChange={(e) => setWebhookUrl(e.target.value)}
+              disabled={isConnected}
+            />
           </div>
         </div>
 
