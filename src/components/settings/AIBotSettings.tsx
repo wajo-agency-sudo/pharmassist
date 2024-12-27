@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Bot, TestTube, Link } from "lucide-react";
+import { Bot, Link } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Card,
@@ -10,19 +10,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-type VerificationStatus = "yes" | "no";
 
 export function AIBotSettings() {
   const [botUrl, setBotUrl] = useState("");
-  const [verificationStatus, setVerificationStatus] = useState<VerificationStatus>("no");
   const { toast } = useToast();
 
   const handleGenerateCode = () => {
@@ -38,8 +28,7 @@ export function AIBotSettings() {
     const generatedCode = `<!-- PharmaAssist Bot Widget -->
 <script>
   window.pharmaAssistConfig = {
-    botUrl: "${botUrl}",
-    verified: ${verificationStatus === "yes"}
+    botUrl: "${botUrl}"
   };
 </script>
 <script src="${botUrl}/widget.js"></script>`;
@@ -49,17 +38,6 @@ export function AIBotSettings() {
       title: "Code copied to clipboard",
       description: "You can now paste the code into your website",
     });
-  };
-
-  const handleVerificationTest = () => {
-    toast({
-      title: "Verification Status",
-      description: `Bot verification status: ${verificationStatus === "yes" ? "Verified" : "Not Verified"}`,
-    });
-  };
-
-  const handleVerificationChange = (value: string) => {
-    setVerificationStatus(value as VerificationStatus);
   };
 
   const isValidDomain = (url: string) => {
@@ -100,30 +78,9 @@ export function AIBotSettings() {
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium flex items-center gap-2">
-            <TestTube className="h-4 w-4" />
-            Verification Status
-          </label>
-          <Select value={verificationStatus} onValueChange={handleVerificationChange}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select verification status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="yes">Yes</SelectItem>
-              <SelectItem value="no">No</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex flex-col gap-4 sm:flex-row">
-          <Button onClick={handleGenerateCode} className="flex-1">
-            Generate Website Code
-          </Button>
-          <Button onClick={handleVerificationTest} variant="outline" className="flex-1">
-            Test Verification Status
-          </Button>
-        </div>
+        <Button onClick={handleGenerateCode} className="w-full">
+          Generate Website Code
+        </Button>
       </CardContent>
     </Card>
   );
