@@ -40,7 +40,8 @@ export function SendbirdSettings() {
 
   const validateCredentials = async () => {
     try {
-      const response = await fetch(`https://api-${applicationId}.sendbird.com/v3/users`, {
+      // Using the daily statistics endpoint as recommended
+      const response = await fetch(`https://api-${applicationId}.sendbird.com/v3/statistics/daily`, {
         method: 'GET',
         headers: {
           'Api-Token': apiToken,
@@ -48,7 +49,13 @@ export function SendbirdSettings() {
         },
       });
 
-      return response.status === 200;
+      if (!response.ok) {
+        console.error('Sendbird API validation failed:', await response.text());
+        return false;
+      }
+
+      const data = await response.json();
+      return data && response.status === 200;
     } catch (error) {
       console.error('Error validating Sendbird credentials:', error);
       return false;
@@ -70,7 +77,7 @@ export function SendbirdSettings() {
     if (!isValid) {
       toast({
         title: "Invalid Credentials",
-        description: "The provided Application ID or API Token is invalid.",
+        description: "Could not connect to Sendbird. Please verify your Application ID and API Token.",
         variant: "destructive",
       });
       return;
