@@ -78,7 +78,7 @@ export function SendbirdSettings() {
               <CardDescription>Configure your Sendbird chat integration settings</CardDescription>
             </div>
           </div>
-          <Badge variant={isConnected ? "success" : "destructive"}>
+          <Badge variant={isConnected ? "default" : "destructive"}>
             {isConnected ? "Connected" : "Not Connected"}
           </Badge>
         </div>
@@ -91,6 +91,7 @@ export function SendbirdSettings() {
             <p>2. Get your Application ID from the Sendbird Dashboard</p>
             <p>3. Generate an API token from your Sendbird Dashboard</p>
             <p>4. Enter both credentials below to connect</p>
+            <p className="text-sm text-muted-foreground mt-2">API Base URL: https://api-{applicationId || '<APP_ID>'}.sendbird.com</p>
             <a 
               href="https://dashboard.sendbird.com" 
               target="_blank" 
