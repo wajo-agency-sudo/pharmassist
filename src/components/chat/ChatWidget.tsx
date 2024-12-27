@@ -31,7 +31,7 @@ export function ChatWidget() {
     if (isOpen && messages.length === 0) {
       const greeting: Message = {
         id: Date.now().toString(),
-        content: "Hi, how are you doing and how can I help?",
+        content: "Hi, how can I assist you today?",
         sender: "agent",
         timestamp: new Date(),
       };
@@ -41,26 +41,13 @@ export function ChatWidget() {
 
   const generateAIResponse = async (userMessage: string): Promise<string> => {
     try {
-      const response = await fetch('https://api.perplexity.ai/chat/completions', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'llama-3.1-sonar-small-128k-online',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a helpful pharmacy assistant. Be precise and concise.'
-            },
-            {
-              role: 'user',
-              content: userMessage
-            }
-          ],
-          temperature: 0.2,
-          max_tokens: 1000,
+          message: userMessage
         }),
       });
 
@@ -69,7 +56,7 @@ export function ChatWidget() {
       }
 
       const data = await response.json();
-      return data.choices[0].message.content;
+      return data.response;
     } catch (error) {
       console.error('Error generating AI response:', error);
       return "I apologize, but I'm having trouble connecting to the AI service. Please try again later.";
@@ -79,30 +66,26 @@ export function ChatWidget() {
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
-    const newMessage: Message = {
+    const userMessage: Message = {
       id: Date.now().toString(),
       content: inputValue,
       sender: "user",
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, newMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInputValue("");
     setIsLoading(true);
 
     try {
       const aiResponse = await generateAIResponse(inputValue);
-      const autoResponse: Message = {
+      const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: aiResponse,
         sender: "agent",
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, autoResponse]);
-
-      toast({
-        description: "Message sent successfully!",
-      });
+      setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
       toast({
         variant: "destructive",
@@ -148,7 +131,8 @@ export function ChatWidget() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Type a message..."
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleSendMessage()}
+                disabled={isLoading}
               />
               <Button 
                 onClick={handleSendMessage} 
