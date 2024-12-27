@@ -6,45 +6,19 @@ import { QuestionHandling } from "@/components/conversations/QuestionHandling";
 import { AIEfficiency } from "@/components/conversations/AIEfficiency";
 import { TrendsInsights } from "@/components/conversations/TrendsInsights";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { MessageSquare, Users, Clock } from "lucide-react";
 import { useState } from "react";
-import { useSendbirdStats } from "@/hooks/use-sendbird-stats";
 
 const Conversations = () => {
   const [selectedChannel, setSelectedChannel] = useState<string>("all");
-  const { messageCount, activeUsers, responseTime } = useSendbirdStats();
 
   return (
     <div className="p-8 space-y-8">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Conversations</h1>
-          <div className="flex items-center gap-2 mt-2">
-            <p className="text-muted-foreground">
-              Manage and respond to patient inquiries
-            </p>
-            <div className="flex gap-4">
-              {messageCount > 0 && (
-                <Badge variant="secondary" className="flex items-center gap-1">
-                  <MessageSquare className="h-3 w-3" />
-                  {messageCount} messages
-                </Badge>
-              )}
-              {activeUsers > 0 && (
-                <Badge variant="secondary" className="flex items-center gap-1">
-                  <Users className="h-3 w-3" />
-                  {activeUsers} active users
-                </Badge>
-              )}
-              {responseTime > 0 && (
-                <Badge variant="secondary" className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  {responseTime}s avg. response
-                </Badge>
-              )}
-            </div>
-          </div>
+          <p className="text-muted-foreground mt-2">
+            Manage and respond to patient inquiries
+          </p>
         </div>
         <Select value={selectedChannel} onValueChange={setSelectedChannel}>
           <SelectTrigger className="w-[180px]">
