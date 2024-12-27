@@ -7,13 +7,13 @@ import { AIEfficiency } from "@/components/conversations/AIEfficiency";
 import { TrendsInsights } from "@/components/conversations/TrendsInsights";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Users, Clock } from "lucide-react";
 import { useState } from "react";
 import { useSendbirdStats } from "@/hooks/use-sendbird-stats";
 
 const Conversations = () => {
   const [selectedChannel, setSelectedChannel] = useState<string>("all");
-  const { messageCount } = useSendbirdStats();
+  const { messageCount, activeUsers, responseTime } = useSendbirdStats();
 
   return (
     <div className="p-8 space-y-8">
@@ -24,12 +24,26 @@ const Conversations = () => {
             <p className="text-muted-foreground">
               Manage and respond to patient inquiries
             </p>
-            {messageCount > 0 && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <MessageSquare className="h-3 w-3" />
-                {messageCount} messages handled
-              </Badge>
-            )}
+            <div className="flex gap-4">
+              {messageCount > 0 && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  <MessageSquare className="h-3 w-3" />
+                  {messageCount} messages
+                </Badge>
+              )}
+              {activeUsers > 0 && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  <Users className="h-3 w-3" />
+                  {activeUsers} active users
+                </Badge>
+              )}
+              {responseTime > 0 && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  {responseTime}s avg. response
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
         <Select value={selectedChannel} onValueChange={setSelectedChannel}>
