@@ -38,7 +38,7 @@ const items = [
     title: "Urgent Actions",
     url: "/urgent",
     icon: AlertOctagon,
-    urgentCount: 3, // This would typically come from your state management or API
+    urgentCount: 3,
   },
   {
     title: "Patients",
@@ -93,7 +93,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title} className="relative group">
+                <SidebarMenuItem key={item.title} className="relative group isolate">
                   <SidebarMenuButton 
                     asChild
                     className={`${location.pathname === item.url ? "bg-[#d9f7ea] text-primary" : ""} hover:bg-gray-100 text-gray-700`}
@@ -102,7 +102,7 @@ export function AppSidebar() {
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
                       {item.urgentCount && (
-                        <span className="absolute -top-[10px] -right-[10px] bg-red-500 text-white rounded-full px-[7px] py-1 text-xs font-bold whitespace-nowrap z-50 shadow-md">
+                        <span className="absolute -top-[10px] -right-[10px] bg-red-500 text-white rounded-full px-[7px] py-1 text-xs font-bold whitespace-nowrap z-[9999] shadow-md">
                           {item.urgentCount}
                         </span>
                       )}
