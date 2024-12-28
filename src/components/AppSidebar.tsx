@@ -98,11 +98,11 @@ export function AppSidebar() {
                     asChild
                     className={location.pathname === item.url ? "bg-[#d9f7ea] text-primary" : ""}
                   >
-                    <Link to={item.url} onClick={handleLinkClick} className="relative pt-2">
+                    <Link to={item.url} onClick={handleLinkClick} className="relative">
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
                       {item.urgentCount && (
-                        <span className="absolute top-0 left-[calc(50%+5px)] transform -translate-x-1/2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs z-0">
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
                           {item.urgentCount}
                         </span>
                       )}
