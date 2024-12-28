@@ -1,4 +1,4 @@
-import { Pill, PillBottle, DollarSign, Package, AlertOctagon, Users, BookOpen, FileText, HeadsetIcon, Settings, User } from "lucide-react";
+import { Home, MessageSquare, DollarSign, Package, AlertOctagon, Users, BookOpen, FileText, HeadsetIcon, Settings, User } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -17,12 +17,12 @@ const items = [
   {
     title: "Home",
     url: "/",
-    icon: PillBottle,
+    icon: Home,
   },
   {
     title: "Conversations",
     url: "/conversations",
-    icon: Pill,
+    icon: MessageSquare,
   },
   {
     title: "Sales",
@@ -102,7 +102,7 @@ export function AppSidebar() {
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
                       {item.urgentCount && (
-                        <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
+                        <span className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs z-10">
                           {item.urgentCount}
                         </span>
                       )}
