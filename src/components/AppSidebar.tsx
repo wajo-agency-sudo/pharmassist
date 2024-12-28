@@ -102,7 +102,7 @@ export function AppSidebar() {
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
                       {item.urgentCount && (
-                        <span className="absolute top-1/2 right-[1px] -translate-y-1/2 bg-red-500 text-white rounded-full px-[2px] py-1 text-xs font-bold whitespace-nowrap z-[9999] shadow-md">
+                        <span className="absolute top-1/2 right-[1px] -translate-y-1/2 bg-red-500 text-white rounded-full px-[7px] py-1 text-xs font-bold whitespace-nowrap z-[9999] shadow-md">
                           {item.urgentCount}
                         </span>
                       )}
