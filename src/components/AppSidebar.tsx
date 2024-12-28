@@ -89,14 +89,14 @@ export function AppSidebar() {
           />
         </div>
         <SidebarGroup>
-          <SidebarGroupLabel>PharmAssist</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-gray-600">PharmAssist</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem key={item.title} className="relative group">
                   <SidebarMenuButton 
                     asChild
-                    className={location.pathname === item.url ? "bg-[#d9f7ea] text-primary" : ""}
+                    className={`${location.pathname === item.url ? "bg-[#d9f7ea] text-primary" : ""} hover:bg-gray-100 text-gray-700`}
                   >
                     <Link to={item.url} onClick={handleLinkClick} className="relative">
                       <item.icon className="h-4 w-4" />
@@ -122,7 +122,7 @@ export function AppSidebar() {
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton 
                       asChild
-                      className={location.pathname === item.url ? "bg-[#d9f7ea] text-primary" : ""}
+                      className={`${location.pathname === item.url ? "bg-[#d9f7ea] text-primary" : ""} hover:bg-gray-100 text-gray-700`}
                     >
                       <Link to={item.url} onClick={handleLinkClick}>
                         <item.icon className="h-4 w-4" />
