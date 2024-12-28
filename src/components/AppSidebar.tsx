@@ -1,4 +1,4 @@
-import { Home, MessageSquare, DollarSign, Package, AlertOctagon, Users, BookOpen, FileText, HeadsetIcon, Settings, User } from "lucide-react";
+import { Pill, PillBottle, DollarSign, Package, AlertOctagon, Users, BookOpen, FileText, HeadsetIcon, Settings, User } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -17,12 +17,12 @@ const items = [
   {
     title: "Home",
     url: "/",
-    icon: Home,
+    icon: PillBottle,
   },
   {
     title: "Conversations",
     url: "/conversations",
-    icon: MessageSquare,
+    icon: Pill,
   },
   {
     title: "Sales",
@@ -38,6 +38,7 @@ const items = [
     title: "Urgent Actions",
     url: "/urgent",
     icon: AlertOctagon,
+    urgentCount: 3, // This would typically come from your state management or API
   },
   {
     title: "Patients",
@@ -97,9 +98,14 @@ export function AppSidebar() {
                     asChild
                     className={location.pathname === item.url ? "bg-[#d9f7ea] text-primary" : ""}
                   >
-                    <Link to={item.url} onClick={handleLinkClick}>
+                    <Link to={item.url} onClick={handleLinkClick} className="relative">
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
+                      {item.urgentCount && (
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
+                          {item.urgentCount}
+                        </span>
+                      )}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
