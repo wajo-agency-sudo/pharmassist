@@ -28,10 +28,17 @@ serve(async (req) => {
       .eq('name', 'PERPLEXITY_API_KEY')
       .single();
 
-    if (secretError || !secretData) {
+    if (secretError) {
+      console.error('Error retrieving API key:', secretError);
       throw new Error('Failed to retrieve API key');
     }
 
+    if (!secretData) {
+      console.error('No API key found');
+      throw new Error('API key not found');
+    }
+
+    console.log('Making request to Perplexity API...');
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
@@ -56,7 +63,9 @@ serve(async (req) => {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to get AI response');
+      const errorText = await response.text();
+      console.error('Perplexity API error:', errorText);
+      throw new Error('Failed to get AI response: ' + errorText);
     }
 
     const data = await response.json();
@@ -65,7 +74,7 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('Error in chat function:', error);
-    return new Response(JSON.stringify({ error: 'Failed to process request' }), {
+    return new Response(JSON.stringify({ error: error.message || 'Failed to process request' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
