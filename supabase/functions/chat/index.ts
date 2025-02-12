@@ -1,6 +1,5 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -15,37 +14,21 @@ serve(async (req) => {
 
   try {
     console.log('Starting chat function...');
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-    );
+    const apiKey = Deno.env.get('PERPLEXITY_API_KEY');
+    
+    if (!apiKey) {
+      console.error('No API key found in environment variables');
+      throw new Error('API key not found');
+    }
 
     const { message } = await req.json();
     console.log('Received message:', message);
     
-    // Get the API key from Supabase
-    console.log('Attempting to retrieve API key...');
-    const { data: secretData, error: secretError } = await supabase
-      .from('secrets')
-      .select('value')
-      .eq('name', 'PERPLEXITY_API_KEY')
-      .single();
-
-    if (secretError) {
-      console.error('Error retrieving API key:', secretError);
-      throw new Error('Failed to retrieve API key');
-    }
-
-    if (!secretData) {
-      console.error('No API key found');
-      throw new Error('API key not found');
-    }
-
-    console.log('Successfully retrieved API key, making request to Perplexity API...');
+    console.log('Making request to Perplexity API...');
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${secretData.value}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
