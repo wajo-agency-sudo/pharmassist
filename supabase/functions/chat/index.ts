@@ -7,7 +7,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -36,7 +35,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful pharmacy assistant. Be precise and concise.'
+            content: 'You are a helpful pharmacy assistant. ONLY answer health and pharmacy related questions. For any other questions, politely explain that you can only assist with health and pharmacy related matters. Always be precise and concise.'
           },
           {
             role: 'user',

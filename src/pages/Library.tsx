@@ -1,13 +1,13 @@
+
 import { useState } from "react";
 import { Search, Filter, Share2, Download, Printer } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ResourceGrid } from "@/components/library/ResourceGrid";
 import { ResourceFilters } from "@/components/library/ResourceFilters";
 import { RecentResources } from "@/components/library/RecentResources";
+import { PDFUploader } from "@/components/library/PDFUploader";
 
 const Library = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -31,6 +31,8 @@ const Library = () => {
           </Button>
         </div>
       </div>
+
+      <PDFUploader />
 
       <div className="grid gap-6 md:grid-cols-[300px_1fr]">
         <ResourceFilters />

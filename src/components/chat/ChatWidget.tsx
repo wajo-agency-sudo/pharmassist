@@ -33,7 +33,7 @@ export function ChatWidget() {
     if (isOpen && messages.length === 0) {
       const greeting: Message = {
         id: Date.now().toString(),
-        content: "Hi, how can I assist you today?",
+        content: "Hello! How can I help you?",
         sender: "agent",
         timestamp: new Date(),
       };

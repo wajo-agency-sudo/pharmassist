@@ -74,6 +74,33 @@ export type Database = {
           },
         ]
       }
+      pdf_documents: {
+        Row: {
+          description: string | null
+          file_path: string
+          id: string
+          tags: string[] | null
+          title: string
+          uploaded_at: string
+        }
+        Insert: {
+          description?: string | null
+          file_path: string
+          id?: string
+          tags?: string[] | null
+          title: string
+          uploaded_at?: string
+        }
+        Update: {
+          description?: string | null
+          file_path?: string
+          id?: string
+          tags?: string[] | null
+          title?: string
+          uploaded_at?: string
+        }
+        Relationships: []
+      }
       secrets: {
         Row: {
           created_at: string
