@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Message {
   id: string;
@@ -23,6 +24,7 @@ export function ChatWidget() {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   useEffect(() => {
     localStorage.setItem('chatMessages', JSON.stringify(messages));
@@ -33,7 +35,7 @@ export function ChatWidget() {
     if (isOpen && messages.length === 0) {
       const greeting: Message = {
         id: Date.now().toString(),
-        content: "Hello! How can I help you?",
+        content: "Hello! I'm here to help with your health and pharmacy-related questions. Please note that I can only provide information about medical and health topics.",
         sender: "agent",
         timestamp: new Date(),
       };
@@ -44,7 +46,10 @@ export function ChatWidget() {
   const generateAIResponse = async (userMessage: string): Promise<string> => {
     try {
       const { data, error } = await supabase.functions.invoke('chat', {
-        body: { message: userMessage },
+        body: { 
+          message: userMessage,
+          userId: user?.id
+        },
       });
 
       if (error) throw error;
@@ -122,7 +127,7 @@ export function ChatWidget() {
               <Input
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Type a message..."
+                placeholder="Ask a health-related question..."
                 onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleSendMessage()}
                 disabled={isLoading}
               />

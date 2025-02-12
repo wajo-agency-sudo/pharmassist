@@ -1,10 +1,25 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const healthTopicKeywords = [
+  'health', 'medical', 'medicine', 'drug', 'pharmacy', 'prescription',
+  'symptom', 'treatment', 'disease', 'condition', 'doctor', 'hospital',
+  'medication', 'pharma', 'dosage', 'side effect', 'vaccine', 'vitamin',
+  'supplement', 'allergy', 'infection', 'antibiotic', 'chronic', 'acute',
+];
+
+function isHealthRelated(message: string): boolean {
+  const lowercaseMessage = message.toLowerCase();
+  return healthTopicKeywords.some(keyword => 
+    lowercaseMessage.includes(keyword.toLowerCase())
+  );
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -20,8 +35,35 @@ serve(async (req) => {
       throw new Error('API key not found');
     }
 
-    const { message } = await req.json();
+    const { message, userId } = await req.json();
     console.log('Received message:', message);
+    
+    // Check if the query is health-related
+    const isHealthQuery = isHealthRelated(message);
+
+    // Create Supabase client
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // Log the interaction
+    await supabaseClient
+      .from('chat_interactions')
+      .insert({
+        user_id: userId,
+        query: message,
+        is_health_related: isHealthQuery
+      });
+
+    if (!isHealthQuery) {
+      return new Response(
+        JSON.stringify({
+          response: "I apologize, but I can only assist with health and pharmacy-related questions. Please feel free to ask about medications, treatments, health conditions, or other medical topics."
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
     
     console.log('Making request to Perplexity API...');
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
@@ -35,7 +77,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful pharmacy assistant. ONLY answer health and pharmacy related questions. For any other questions, politely explain that you can only assist with health and pharmacy related matters. Always be precise and concise.'
+            content: 'You are a helpful pharmacy assistant. ONLY answer health and pharmacy related questions. For any other questions, politely explain that you can only assist with health and pharmacy related matters. Always be precise and concise. Ensure all medical advice aligns with current medical best practices and include appropriate disclaimers when necessary.'
           },
           {
             role: 'user',
