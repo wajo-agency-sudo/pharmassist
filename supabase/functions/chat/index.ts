@@ -52,7 +52,7 @@ serve(async (req) => {
    - If they say 'yes', respond with:
      "You can order directly from our online pharmacy:
      <div class='mt-4'>
-       <a href='https://apotheekvanhyfte.be' target='_blank' class='inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors'>
+       <a href='https://apotheekvanhyfte.be' target='_blank' class='inline-flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors'>
          Visit Our Pharmacy
          <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 17l9.2-9.2M17 17V7H7'/></svg>
        </a>
