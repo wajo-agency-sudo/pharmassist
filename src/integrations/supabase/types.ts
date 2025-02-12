@@ -60,6 +60,59 @@ export type Database = {
         }
         Relationships: []
       }
+      health_assessments: {
+        Row: {
+          allergies: string | null
+          conversation_id: string | null
+          created_at: string
+          current_medications: string | null
+          current_stage: Database["public"]["Enums"]["conversation_stage"]
+          delivery_preference: string | null
+          duration: string | null
+          id: string
+          severity: number | null
+          symptoms: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          allergies?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          current_medications?: string | null
+          current_stage?: Database["public"]["Enums"]["conversation_stage"]
+          delivery_preference?: string | null
+          duration?: string | null
+          id?: string
+          severity?: number | null
+          symptoms?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          allergies?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          current_medications?: string | null
+          current_stage?: Database["public"]["Enums"]["conversation_stage"]
+          delivery_preference?: string | null
+          duration?: string | null
+          id?: string
+          severity?: number | null
+          symptoms?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "health_assessments_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           content: string
@@ -175,6 +228,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      conversation_stage:
+        | "initial_assessment"
+        | "symptom_details"
+        | "medical_history"
+        | "delivery_preference"
+        | "recommendation"
+        | "follow_up"
       message_role: "user" | "assistant" | "system"
     }
     CompositeTypes: {
