@@ -1,9 +1,11 @@
+
 import { useState, useEffect } from "react";
 import { MessageCircle, X, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
   id: string;
@@ -41,25 +43,15 @@ export function ChatWidget() {
 
   const generateAIResponse = async (userMessage: string): Promise<string> => {
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: userMessage
-        }),
+      const { data, error } = await supabase.functions.invoke('chat', {
+        body: { message: userMessage },
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to get AI response');
-      }
-
-      const data = await response.json();
+      if (error) throw error;
       return data.response;
     } catch (error) {
       console.error('Error generating AI response:', error);
-      return "I apologize, but I'm having trouble connecting to the AI service. Please try again later.";
+      throw new Error('Failed to get AI response');
     }
   };
 
