@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from "@/integrations/supabase/client";
 
 interface User {
   id: string;
@@ -9,7 +10,7 @@ interface User {
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
-  login: (username: string, password: string) => boolean;
+  login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
 
@@ -29,17 +30,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  const login = (username: string, password: string) => {
+  const login = async (username: string, password: string) => {
     if (username === 'admin' && password === 'admin_gillesimon') {
-      setIsAuthenticated(true);
-      // Generate a valid UUID for the mock user
       const mockUser = { 
         id: crypto.randomUUID()
       };
-      setUser(mockUser);
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      return true;
+
+      try {
+        // Create a profile for the mock user
+        const { error } = await supabase
+          .from('profiles')
+          .insert([{ id: mockUser.id, email: 'admin@example.com' }]);
+
+        if (error) throw error;
+
+        setIsAuthenticated(true);
+        setUser(mockUser);
+        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('user', JSON.stringify(mockUser));
+        return true;
+      } catch (error) {
+        console.error('Error creating profile:', error);
+        return false;
+      }
     }
     return false;
   };
