@@ -14,14 +14,17 @@ serve(async (req) => {
   }
 
   try {
+    console.log('Starting chat function...');
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     );
 
     const { message } = await req.json();
+    console.log('Received message:', message);
     
     // Get the API key from Supabase
+    console.log('Attempting to retrieve API key...');
     const { data: secretData, error: secretError } = await supabase
       .from('secrets')
       .select('value')
@@ -38,7 +41,7 @@ serve(async (req) => {
       throw new Error('API key not found');
     }
 
-    console.log('Making request to Perplexity API...');
+    console.log('Successfully retrieved API key, making request to Perplexity API...');
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
@@ -69,6 +72,7 @@ serve(async (req) => {
     }
 
     const data = await response.json();
+    console.log('Successfully received response from Perplexity API');
     return new Response(JSON.stringify({ response: data.choices[0].message.content }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
