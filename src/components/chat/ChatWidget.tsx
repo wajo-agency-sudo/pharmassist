@@ -6,8 +6,6 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import { ConversationStage } from "@/types/conversation";
 
 interface Message {
   id: string;
@@ -24,23 +22,18 @@ export function ChatWidget() {
   });
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [currentStage, setCurrentStage] = useState<ConversationStage>('initial_assessment');
-  const [conversationId, setConversationId] = useState<string>(() => 
-    localStorage.getItem('conversationId') || crypto.randomUUID()
-  );
   const { toast } = useToast();
-  const { user } = useAuth();
 
   useEffect(() => {
     localStorage.setItem('chatMessages', JSON.stringify(messages));
-    localStorage.setItem('conversationId', conversationId);
-  }, [messages, conversationId]);
+    window.dispatchEvent(new Event('storage'));
+  }, [messages]);
 
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       const greeting: Message = {
         id: Date.now().toString(),
-        content: "Hello! I'm here to help with your health concerns. Please describe your symptoms or health issue.",
+        content: "Hello! How can I help you?",
         sender: "agent",
         timestamp: new Date(),
       };
@@ -48,22 +41,14 @@ export function ChatWidget() {
     }
   }, [isOpen]);
 
-  const generateAIResponse = async (userMessage: string): Promise<{
-    response: string;
-    nextPrompt: string;
-    currentStage: ConversationStage;
-  }> => {
+  const generateAIResponse = async (userMessage: string): Promise<string> => {
     try {
       const { data, error } = await supabase.functions.invoke('chat', {
-        body: { 
-          message: userMessage,
-          userId: user?.id,
-          conversationId
-        },
+        body: { message: userMessage },
       });
 
       if (error) throw error;
-      return data;
+      return data.response;
     } catch (error) {
       console.error('Error generating AI response:', error);
       throw new Error('Failed to get AI response');
@@ -85,24 +70,14 @@ export function ChatWidget() {
     setIsLoading(true);
 
     try {
-      const { response, nextPrompt, currentStage: newStage } = await generateAIResponse(inputValue);
-      
-      const aiResponse: Message = {
+      const aiResponse = await generateAIResponse(inputValue);
+      const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: response,
+        content: aiResponse,
         sender: "agent",
         timestamp: new Date(),
       };
-
-      const promptMessage: Message = {
-        id: (Date.now() + 2).toString(),
-        content: nextPrompt,
-        sender: "agent",
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, aiResponse, promptMessage]);
-      setCurrentStage(newStage);
+      setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
       toast({
         variant: "destructive",
@@ -147,7 +122,7 @@ export function ChatWidget() {
               <Input
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Type your response..."
+                placeholder="Type a message..."
                 onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleSendMessage()}
                 disabled={isLoading}
               />
