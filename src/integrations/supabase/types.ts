@@ -9,7 +9,71 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      conversations: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_archived: boolean | null
+          last_message: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_archived?: boolean | null
+          last_message?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_archived?: boolean | null
+          last_message?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          content: string
+          conversation_id: string | null
+          created_at: string | null
+          id: string
+          is_urgent: boolean | null
+          metadata: Json | null
+          role: Database["public"]["Enums"]["message_role"]
+        }
+        Insert: {
+          content: string
+          conversation_id?: string | null
+          created_at?: string | null
+          id?: string
+          is_urgent?: boolean | null
+          metadata?: Json | null
+          role: Database["public"]["Enums"]["message_role"]
+        }
+        Update: {
+          content?: string
+          conversation_id?: string | null
+          created_at?: string | null
+          id?: string
+          is_urgent?: boolean | null
+          metadata?: Json | null
+          role?: Database["public"]["Enums"]["message_role"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +82,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      message_role: "user" | "assistant" | "system"
     }
     CompositeTypes: {
       [_ in never]: never
