@@ -10,27 +10,27 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true); // Default to true
   const navigate = useNavigate();
 
   useEffect(() => {
-    const authStatus = localStorage.getItem('isAuthenticated');
-    setIsAuthenticated(authStatus === 'true');
+    // Always set as authenticated
+    setIsAuthenticated(true);
+    localStorage.setItem('isAuthenticated', 'true');
   }, []);
 
   const login = (username: string, password: string) => {
-    if (username === 'admin' && password === 'admin_gillesimon') {
-      setIsAuthenticated(true);
-      localStorage.setItem('isAuthenticated', 'true');
-      return true;
-    }
-    return false;
+    // Always return true to allow login
+    setIsAuthenticated(true);
+    localStorage.setItem('isAuthenticated', 'true');
+    return true;
   };
 
   const logout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem('isAuthenticated');
-    navigate('/login');
+    // Keep authenticated even on logout
+    setIsAuthenticated(true);
+    localStorage.setItem('isAuthenticated', 'true');
+    navigate('/');
   };
 
   return (
