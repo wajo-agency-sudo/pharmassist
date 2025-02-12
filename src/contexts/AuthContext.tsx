@@ -1,8 +1,14 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+interface User {
+  id: string;
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
+  user: User | null;
   login: (username: string, password: string) => boolean;
   logout: () => void;
 }
@@ -11,17 +17,25 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const authStatus = localStorage.getItem('isAuthenticated');
+    const storedUser = localStorage.getItem('user');
     setIsAuthenticated(authStatus === 'true');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
   }, []);
 
   const login = (username: string, password: string) => {
     if (username === 'admin' && password === 'admin_gillesimon') {
       setIsAuthenticated(true);
+      const mockUser = { id: 'mock-user-id' };
+      setUser(mockUser);
       localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('user', JSON.stringify(mockUser));
       return true;
     }
     return false;
@@ -29,12 +43,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = () => {
     setIsAuthenticated(false);
+    setUser(null);
     localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('user');
     navigate('/login');
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
