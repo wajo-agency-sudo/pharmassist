@@ -32,7 +32,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = (username: string, password: string) => {
     if (username === 'admin' && password === 'admin_gillesimon') {
       setIsAuthenticated(true);
-      const mockUser = { id: 'mock-user-id' };
+      // Generate a valid UUID for the mock user
+      const mockUser = { 
+        id: crypto.randomUUID()
+      };
       setUser(mockUser);
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem('user', JSON.stringify(mockUser));
