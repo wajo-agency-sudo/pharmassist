@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { MessageCircle, X, Send } from "lucide-react";
+import { MessageCircle, X, Send, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -110,8 +110,25 @@ export function ChatWidget() {
         <div className="absolute bottom-16 right-0 w-[400px] bg-white rounded-lg shadow-lg border">
           <div className="flex flex-col h-[600px]">
             <div className="p-4 border-b">
-              <h3 className="font-semibold">PharmAssist Chat</h3>
-              <p className="text-sm text-muted-foreground">Ask us about your health concerns</p>
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="font-semibold">PharmAssist Chat</h3>
+                  <p className="text-sm text-muted-foreground">Ask us about your health concerns</p>
+                </div>
+                <Button
+                  variant="secondary"
+                  asChild
+                  className="flex items-center gap-2"
+                >
+                  <a
+                    href="https://apotheekvanhyfte.be"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Visit Pharmacy <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
             </div>
             
             <ScrollArea className="flex-1 p-4">
