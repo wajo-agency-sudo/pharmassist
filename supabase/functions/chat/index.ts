@@ -49,7 +49,7 @@ serve(async (req) => {
 
 3. Purchase Prompt:
    - Always ask directly: "Would you like to purchase this medication or related products?"
-   - If they say 'yes', respond with: "You can order directly from our online pharmacy at apotheekvanhyfte.be"
+   - If they say 'yes', respond with: "You can order directly from our online pharmacy at <a href='https://apotheekvanhyfte.be' target='_blank'>apotheekvanhyfte.be</a>"
 
 For non-health topics, respond:
 "I can only assist with health and medication-related questions. Please feel free to ask about any health concerns."

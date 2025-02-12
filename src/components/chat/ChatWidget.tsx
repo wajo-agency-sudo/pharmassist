@@ -129,8 +129,8 @@ export function ChatWidget() {
                           ? "bg-primary text-primary-foreground"
                           : "bg-muted"
                       }`}
+                      dangerouslySetInnerHTML={{ __html: message.content }}
                     >
-                      {message.content}
                     </div>
                     <span className="text-xs text-muted-foreground mt-1">
                       {formatTime(new Date(message.timestamp))}
